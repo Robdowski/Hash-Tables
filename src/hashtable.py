@@ -62,18 +62,21 @@ class HashTable:
                 while current.next is not None:
                     if current.key == key:
                         current.value = value
-                           
+                        return
+
                     current = current.next
-                current.next = LinkedPair(key, value)
-                 
+                
+                if current.key == key:
+                    current.value = value
+                    return
+
+                else:
+                    current.next = LinkedPair(key, value)
+                
         else: ## if it's empty
             self.storage[index] = LinkedPair(key, value)
             
                 
-
-
-
-
     def remove(self, key):
         '''
         Remove the value stored with the given key.
@@ -84,7 +87,7 @@ class HashTable:
         '''
         index = self._hash_mod(key)
         
-        if self.storage[index].key == key:
+        if self.storage[index].key == key: ## first one
             if self.storage[index].next is not None:
                 self.storage[index] = self.storage[index].next
             else:
@@ -92,9 +95,14 @@ class HashTable:
 
         elif self.storage[index] is not None:
             current = self.storage[index]
-            while current is not None:
+
+            while current.next is not None:
+                prev = current
+                current = current.next
+
                 if current.key == key:
-                    current = current.next
+                    prev.next = current.next
+                    return
 
         else:
             raise KeyError()
@@ -112,7 +120,18 @@ class HashTable:
         '''
         index = self._hash_mod(key)
 
-        return self.storage[index]
+        if self.storage[index] is not None:
+            current = self.storage[index]
+            while current is not None:
+                if current.key == key:
+                    return current.value
+
+                current = current.next
+
+            return None
+
+        else:
+            return None
 
 
     def resize(self):
