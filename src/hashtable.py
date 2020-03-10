@@ -51,7 +51,26 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        if self.storage[index] is not None: 
+            if self.storage[index].key == key: ## if the first link is key
+                self.storage[index].value = value
+    
+            else:## if it's a later link
+                current = self.storage[index]
+                while current.next is not None:
+                    if current.key == key:
+                        current.value = value
+                           
+                    current = current.next
+                current.next = LinkedPair(key, value)
+                 
+        else: ## if it's empty
+            self.storage[index] = LinkedPair(key, value)
+            
+                
+
 
 
 
@@ -63,7 +82,24 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        
+        if self.storage[index].key == key:
+            if self.storage[index].next is not None:
+                self.storage[index] = self.storage[index].next
+            else:
+                self.storage[index] = None
+
+        elif self.storage[index] is not None:
+            current = self.storage[index]
+            while current is not None:
+                if current.key == key:
+                    current = current.next
+
+        else:
+            raise KeyError()
+
+
 
 
     def retrieve(self, key):
@@ -74,7 +110,9 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        return self.storage[index]
 
 
     def resize(self):
@@ -84,7 +122,18 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        temp = self.storage.copy()
+
+        self.capacity = self.capacity * 2
+        self.storage = [None] * self.capacity
+
+        for item in temp:
+            current = item
+            while current is not None:
+                self.insert(current.key, current.value)
+                current = current.next
+        
+        temp = None
 
 
 
